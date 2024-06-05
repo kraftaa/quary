@@ -104,6 +104,10 @@ fabric.properties
 
 # *.iml
 # modules.xml
+models*
+.idea*
+quary*
+.gitignore
 
 machine_learning/wikisql
 .vercel
