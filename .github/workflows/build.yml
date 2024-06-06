@@ -35,6 +35,7 @@ jobs:
           key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-registry-
+
       - name: Cache Cargo index
         uses: actions/cache@v2
         with:
@@ -44,19 +45,19 @@ jobs:
             ${{ runner.os }}-cargo-index-
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-multilib g++-multilib 
+        run: sudo apt-get update && sudo apt-get install -y gcc-multilib g++-multilib
 
       - name: Install cross-compilation tools
         if: matrix.target == 'aarch64-unknown-linux-gnu'
         run: sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc6-dev-arm64-cross
 
-      - name: Build release
-        run: cargo build --release --target ${{ matrix.target }}
+      - name: Build
+        run: |
+          cargo build --release --target=${{ matrix.target }}
+          strip target/${{ matrix.target }}/release/quary
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: my-project-${{ matrix.target }}-${{ github.ref_name }}
-          path: target/${{ matrix.target }}/release/
+          name: quary-${{ matrix.target }}-${{ github.ref_name }}
+          path: target/${{ matrix.target }}/release/quary
